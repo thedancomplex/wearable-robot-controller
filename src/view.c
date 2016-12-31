@@ -252,7 +252,8 @@ void mouse_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
 
 	print_debug((int)ev->canvas.x,(int)ev->canvas.y);
-	send_udp(1,2);
+	send_udp((int)ev->canvas.x,(int)ev->canvas.y);
+	//send_udp(1,2);
 }
 
 
@@ -268,6 +269,7 @@ void mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	s_info.cur_x = ev->canvas.x;
 	s_info.cur_y = ev->canvas.y;
 
+	send_udp((int)ev->canvas.x,(int)ev->canvas.y);
 	//print_debug((int)ev->canvas.x,(int)ev->canvas.y);
 }
 
@@ -286,6 +288,7 @@ void mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	s_info.prev_y = ev->prev.canvas.y;
 
 	//print_debug((int)s_info.cur_x, (int)s_info.cur_y);
+	send_udp((int)s_info.cur_x, (int)s_info.cur_y);
 }
 
 void print_debug(int x, int y)
@@ -410,8 +413,16 @@ int send_udp(int x, int y)
     /* get a message from the user */
     char buf[256];
 
-	char *s1 = "wrc joy";
-	snprintf(buf, 256, "%s %d %d", s1, x, y);
+	char *s1 = "joy left";
+	double k = 1.4;
+	double xf = (x/360.0 * 2.0 - 1.0) * k;
+	double yf = -(y/360.0 * 2.0 - 1.0) * k;
+
+	if(xf >  1.0) xf = 1.0;
+	if(xf < -1.0) xf = -1.0;
+	if(yf >  1.0) yf = 1.0;
+	if(yf < -1.0) yf = -1.0;
+	snprintf(buf, 256, "%s %.3f %.3f", s1, xf, yf);
 
 
     /* send the message to the server */
