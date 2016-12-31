@@ -342,7 +342,7 @@ int send_udp_one(void)
     int serverlen;
     struct sockaddr_in serveraddr;
     struct hostent *server;
-    char *the_ip = "192.168.1.188";
+    char *the_ip = "104.131.47.73";
     int portno = 2362;
     //CURL *curl;
     //CURLcode res;
