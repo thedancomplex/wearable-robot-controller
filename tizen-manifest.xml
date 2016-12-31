@@ -5,5 +5,5 @@
         <label>wearable-robot-controller</label>
         <icon>wearable-robot-controller.png</icon>
     </ui-application>
-    <feature name="http://tizen.org/feature/screen.size.normal.320.320">true</feature>
+    <feature name="http://tizen.org/feature/screen.size.normal.360.360">true</feature>
 </manifest>
