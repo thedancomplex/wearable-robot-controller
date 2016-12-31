@@ -44,7 +44,7 @@ int udp_sockfd;
 int udp_serverlen;
 struct sockaddr_in udp_serveraddr;
 struct hostent *udp_server;
-char *udp_the_ip = "192.168.1.188";
+char *udp_the_ip = "104.131.47.73";
 int udp_portno = 2362;
 
 #define SRV_IP "999.999.999.999"
