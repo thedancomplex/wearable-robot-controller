@@ -35,4 +35,6 @@ void mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 void print_debug(int x, int y);
 int send_udp_one(void);
 void eprint(char *msg);
+int send_udp(int x, int y);
+int init_udp(void);
 #endif

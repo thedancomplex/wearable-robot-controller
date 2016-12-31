@@ -38,6 +38,15 @@
 #include <system_info.h>
 */
 
+
+/* UDP */
+int udp_sockfd;
+int udp_serverlen;
+struct sockaddr_in udp_serveraddr;
+struct hostent *udp_server;
+char *udp_the_ip = "192.168.1.188";
+int udp_portno = 2362;
+
 #define SRV_IP "999.999.999.999"
 
 #define BUFSIZE 1024
@@ -79,6 +88,8 @@ void view_create(void)
 		return;
 	}
 
+	/* udp setup */
+	init_udp();
 	/* Show window after main view is set up */
 	evas_object_show(s_info.win);
 }
@@ -241,7 +252,7 @@ void mouse_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
 
 	print_debug((int)ev->canvas.x,(int)ev->canvas.y);
-	send_udp_one();
+	send_udp(1,2);
 }
 
 
@@ -319,6 +330,8 @@ void eprint(char *msg) {
 }
 
 
+
+
 int send_udp_one(void)
 {
 
@@ -345,12 +358,12 @@ int send_udp_one(void)
     serveraddr.sin_port = htons(portno);
 
     /* get a message from the user */
-    char *buf = "hello robot";
+    char *buf = "hello robot\n\r";
 
     /* send the message to the server */
     serverlen = sizeof(serveraddr);
     n = sendto(sockfd, buf, strlen(buf), 0, &serveraddr, serverlen);
-    n = sendto(sockfd, buf, strlen(buf), MSG_DONTWAIT, &serveraddr, serverlen);
+    //n = sendto(sockfd, buf, strlen(buf), MSG_DONTWAIT, &serveraddr, serverlen);
 
     if (n < 0)
       error("ERROR in sendto");
@@ -363,6 +376,47 @@ int send_udp_one(void)
       error("ERROR in recvfrom");
     printf("Echo from server: %s", buf);
  */
+    return 0;
+
+
+}
+
+
+
+
+int init_udp(void)
+{
+    /* socket: create the socket */
+    udp_sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+    if (udp_sockfd < 0)
+    {
+        error("ERROR opening socket");
+        return -1;
+    }
+
+    /* build the server's Internet address */
+    udp_serveraddr.sin_family = AF_INET;
+    udp_serveraddr.sin_addr.s_addr = inet_addr(udp_the_ip);
+    udp_serveraddr.sin_port = htons(udp_portno);
+
+    udp_serverlen = sizeof(udp_serveraddr);
+
+    return 0;
+
+}
+
+int send_udp(int x, int y)
+{
+    /* get a message from the user */
+    char *buf = "hello robot";
+
+    /* send the message to the server */
+    int n = sendto(udp_sockfd, buf, strlen(buf), 0, &udp_serveraddr, udp_serverlen);
+//    n = sendto(sockfd, buf, strlen(buf), MSG_DONTWAIT, &serveraddr, serverlen);
+
+    if (n < 0)
+      error("ERROR in sendto");
+
     return 0;
 
 
