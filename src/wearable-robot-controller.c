@@ -1,4 +1,5 @@
 #include "wearable-robot-controller.h"
+#include "view.h"
 
 typedef struct appdata {
 	Evas_Object *win;
@@ -6,19 +7,22 @@ typedef struct appdata {
 	Evas_Object *label;
 } appdata_s;
 
+/* dan
 static void
 win_delete_request_cb(void *data, Evas_Object *obj, void *event_info)
 {
 	ui_app_exit();
 }
 
+
 static void
 win_back_cb(void *data, Evas_Object *obj, void *event_info)
 {
 	appdata_s *ad = data;
-	/* Let window go to hide state. */
+	// Let window go to hide state.
 	elm_win_lower(ad->win);
 }
+*/
 
 static void
 create_base_gui(appdata_s *ad)
@@ -49,6 +53,28 @@ create_base_gui(appdata_s *ad)
 	evas_object_size_hint_weight_set(ad->label, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
 	elm_object_content_set(ad->conform, ad->label);
 
+
+	/* Add background */
+	/* Get background image locaiton */
+	char sample_filepath[256];
+	char *source_filename = "wrc-back-r1.png";
+	char *resource_path = app_get_resource_path();
+	snprintf(sample_filepath, 256, "%s%s", resource_path, source_filename);
+	free(resource_path);
+
+
+	dlog_print(DLOG_ERROR, LOG_TAG, "*******dan test %d", 42);
+	dlog_print(DLOG_ERROR, LOG_TAG, "************************************************");
+	dlog_print(DLOG_ERROR, LOG_TAG, "************************************************");
+	dlog_print(DLOG_ERROR, LOG_TAG, "************************************************");
+	dlog_print(DLOG_ERROR, LOG_TAG, sample_filepath);
+	dlog_print(DLOG_ERROR, LOG_TAG, "************************************************");
+	dlog_print(DLOG_ERROR, LOG_TAG, "************************************************");
+	dlog_print(DLOG_ERROR, LOG_TAG, "************************************************");
+
+	char *buff = "<align=center>dan</align>";
+	elm_object_text_set(ad->label, buff);
+
 	/* Show window after base gui is set up */
 	evas_object_show(ad->win);
 }
@@ -62,7 +88,8 @@ app_create(void *data)
 		If this function returns false, the application is terminated */
 	appdata_s *ad = data;
 
-	create_base_gui(ad);
+	//create_base_gui(ad);
+	view_create();
 
 	return true;
 }
