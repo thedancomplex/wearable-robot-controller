@@ -25,6 +25,17 @@ static struct view_info {
 	cairo_t *cairo;
 	cairo_surface_t *surface;
 	unsigned char *pixels;
+
+
+	/* Variable for start drawing state */
+	int touch_drawing_start;
+
+	/* Variables for path start and end point */
+	int cur_x;
+	int cur_y;
+	int prev_x;
+	int prev_y;
+
 } s_info = {
 	.win = NULL,
 	.conform = NULL,
@@ -77,6 +88,14 @@ Evas_Object *view_create_win(const char *pkg_name)
 	/* Create image */
 	s_info.img = evas_object_image_filled_add(evas_object_evas_get(win));
 	evas_object_show(s_info.img);
+
+
+
+	/* Add mouse event callbacks */
+	evas_object_event_callback_add(s_info.img, EVAS_CALLBACK_MOUSE_DOWN, mouse_down_cb, NULL);
+	evas_object_event_callback_add(s_info.img, EVAS_CALLBACK_MOUSE_UP, mouse_up_cb, NULL);
+	evas_object_event_callback_add(s_info.img, EVAS_CALLBACK_MOUSE_MOVE, mouse_move_cb, NULL);
+
 
 	return win;
 }
@@ -175,3 +194,80 @@ void start_cairo_drawing(void)
 	/* Display this cairo image painting on screen */
 	evas_object_image_data_update_add(s_info.img, 0, 0, s_info.width, s_info.height);
 }
+
+
+/* When user touch down on screen, EVAS_CALLBACK_MOUSE_DOWN event occurred
+	At that time this mouse_down_cb function callback called
+	In this function, can get and set the touched position and
+	If this touch down event is first occurred, can change
+	touch_drawing_start's state to enable start drawing */
+void mouse_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+	Evas_Event_Mouse_Down *ev = (Evas_Event_Mouse_Down *) event_info;
+
+	/* Change the variable's state to enable start drawing */
+	if (s_info.touch_drawing_start == 0)
+		s_info.touch_drawing_start = 1;
+
+	/* Get previous position from Evas_Event_Mouse_Down event */
+	s_info.prev_x = ev->canvas.x;
+	s_info.prev_y = ev->canvas.y;
+
+
+	print_debug((int)ev->canvas.x,(int)ev->canvas.y);
+}
+
+
+/* When user touch off on screen, EVAS_CALLBACK_MOUSE_UP event occurred
+	At that time this mouse_up_cb function callback called
+	In this function, get and set the touch end position
+	Can draw a line from down event position to up event position */
+void mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+	Evas_Event_Mouse_Up *ev = (Evas_Event_Mouse_Up *) event_info;
+
+	/* Get current position from Evas_Event_Mouse_Up event */
+	s_info.cur_x = ev->canvas.x;
+	s_info.cur_y = ev->canvas.y;
+
+	print_debug((int)ev->canvas.x,(int)ev->canvas.y);
+}
+
+/* When user touch and move on screen, EVAS_CALLBACK_MOUSE_MOVE event occurred
+	At that time this mouse_move_cb function callback called
+	In this function, can get the mouse moved from some position to other position
+	And set the moved position with inputs */
+void mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+	Evas_Event_Mouse_Move *ev = (Evas_Event_Mouse_Move *)event_info;
+
+	/* Get touch moved position values */
+	s_info.cur_x = ev->cur.canvas.x;
+	s_info.cur_y = ev->cur.canvas.y;
+	s_info.prev_x = ev->prev.canvas.x;
+	s_info.prev_y = ev->prev.canvas.y;
+
+	print_debug((int)s_info.cur_x, (int)s_info.cur_y);
+}
+
+void print_debug(int x, int y)
+{
+	/* debug location */
+	char debug_buff[256];
+	snprintf(debug_buff, 256, "x = %d  y = %d", x, y);
+
+
+	dlog_print(DLOG_ERROR, LOG_TAG, "*******dan test %d", 42);
+	dlog_print(DLOG_ERROR, LOG_TAG, "************************************************");
+	dlog_print(DLOG_ERROR, LOG_TAG, "************************************************");
+	dlog_print(DLOG_ERROR, LOG_TAG, "************************************************");
+	dlog_print(DLOG_ERROR, LOG_TAG, debug_buff);
+	dlog_print(DLOG_ERROR, LOG_TAG, "************************************************");
+	dlog_print(DLOG_ERROR, LOG_TAG, "************************************************");
+	dlog_print(DLOG_ERROR, LOG_TAG, "************************************************");
+}
+
+
+
+
+

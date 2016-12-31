@@ -29,4 +29,8 @@ void win_delete_request_cb(void *data, Evas_Object *obj, void *event_info);
 void win_back_cb(void *data, Evas_Object *obj, void *event_info);
 void win_resize_cb(void *data, Evas *e , Evas_Object *obj , void *event_info);
 void start_cairo_drawing(void);
+void mouse_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+void mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+void mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
+void print_debug(int x, int y);
 #endif
