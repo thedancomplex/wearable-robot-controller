@@ -5,5 +5,11 @@
         <label>wearable-robot-controller</label>
         <icon>wearable-robot-controller.png</icon>
     </ui-application>
+    <privileges>
+        <privilege>http://tizen.org/privilege/network.get</privilege>
+        <privilege>http://tizen.org/privilege/network.set</privilege>
+        <privilege>http://tizen.org/privilege/internet</privilege>
+        <privilege>http://tizen.org/privilege/network.profile</privilege>
+    </privileges>
     <feature name="http://tizen.org/feature/screen.size.normal.360.360">true</feature>
 </manifest>

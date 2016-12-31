@@ -24,6 +24,19 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <arpa/inet.h>
+//#include <curl.h>
+//#include <net_connection.h>
+/*
+#include "Commnucation/Socket.h"
+#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/select.h>
+#include <dlog.h>
+#include <curl.h>
+#include <system_info.h>
+*/
 
 #define SRV_IP "999.999.999.999"
 
@@ -313,8 +326,11 @@ int send_udp_one(void)
     int serverlen;
     struct sockaddr_in serveraddr;
     struct hostent *server;
-    char *hostname = "192.168.1.188";
+    char *the_ip = "192.168.1.188";
     int portno = 2362;
+    //CURL *curl;
+    //CURLcode res;
+    //curl_socket_t sockfd;
 //    char buf[BUFSIZE];
 
 
@@ -323,14 +339,9 @@ int send_udp_one(void)
     if (sockfd < 0)
         error("ERROR opening socket");
 
-    /* gethostbyname: get the server's DNS entry */
-    server = gethostbyname(hostname);
-
     /* build the server's Internet address */
-    bzero((char *) &serveraddr, sizeof(serveraddr));
     serveraddr.sin_family = AF_INET;
-    bcopy((char *)server->h_addr,
-	  (char *)&serveraddr.sin_addr.s_addr, server->h_length);
+    serveraddr.sin_addr.s_addr = inet_addr(the_ip);
     serveraddr.sin_port = htons(portno);
 
     /* get a message from the user */
@@ -339,10 +350,11 @@ int send_udp_one(void)
     /* send the message to the server */
     serverlen = sizeof(serveraddr);
     n = sendto(sockfd, buf, strlen(buf), 0, &serveraddr, serverlen);
+    n = sendto(sockfd, buf, strlen(buf), MSG_DONTWAIT, &serveraddr, serverlen);
+
     if (n < 0)
       error("ERROR in sendto");
 
-    eprint(&serveraddr);
 
     /* print the server's reply */
 /*
@@ -355,5 +367,7 @@ int send_udp_one(void)
 
 
 }
+
+
 
 
