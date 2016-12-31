@@ -408,7 +408,11 @@ int init_udp(void)
 int send_udp(int x, int y)
 {
     /* get a message from the user */
-    char *buf = "hello robot";
+    char buf[256];
+
+	char *s1 = "wrc joy";
+	snprintf(buf, 256, "%s %d %d", s1, x, y);
+
 
     /* send the message to the server */
     int n = sendto(udp_sockfd, buf, strlen(buf), 0, &udp_serveraddr, udp_serverlen);
